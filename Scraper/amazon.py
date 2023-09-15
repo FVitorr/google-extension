@@ -11,30 +11,32 @@ import json
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 
-timeout = 10
+timeout = 2
+nTry = 10
 
 
 class amazonScraper:
     def __init__(self) -> None:
-        #self.driver = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options)
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        self.driver = webdriver.Chrome(ChromeDriverManager().install(),options=chrome_options)
+        #self.driver = webdriver.Chrome(ChromeDriverManager().install())
 
         self.datas = []
         self.amount_data = 0
     
     def searchProduct(self,q_page: int,product : str):
-
         url = f"https://www.amazon.com.br/s?k={product}"
-        self.driver.get(url)
+        
 
         for page in range(0,q_page):
-            n_url = url + f"&{page}"
-            try: 
-                response = requests.get(n_url,timeout = timeout)
-            except requests.exceptions.Timeout:  # se o tempo limite for atingido
-                return -1
-            except requests.exceptions.RequestException as e: # outras exceções de solicitação
-                return e
+            n_url = url + f"&{page + 1}"
+            ntry = 0
+
+            response = requests.get(n_url)
+            while(response.status_code != 200 and ntry < nTry):
+                response = requests.get(n_url)
+                ntry+=1
+                time.sleep(timeout)
+   
             
             if response.status_code == 200:
                 soup = BeautifulSoup(response.content,"html.parser")
@@ -65,6 +67,7 @@ class amazonScraper:
                     #Aqui excluir entradas que contenha descrição tipo livro
                     try:
                         desConten = result.find("a",{"class":"a-size-base"}).text
+                        print(desConten)
                     except:
                         pass
 
@@ -72,15 +75,15 @@ class amazonScraper:
         
     def toString(self):
         for data in self.datas:
-            # Use json.dumps para serializar o dicionário em formato JSON
             json_data = json.dumps(data, indent=4, ensure_ascii=False)
             print(json_data)
 
 
 
+
 if __name__ == "__main__":
     scraper = amazonScraper()
-    scraper.searchProduct(1, "PS4")
+    e = scraper.searchProduct(1, "geladeira+eletrolux")
     scraper.toString()
     
-    time.sleep(100)
+    

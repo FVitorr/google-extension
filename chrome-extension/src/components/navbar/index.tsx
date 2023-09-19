@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { Logo, TextMD } from "../texts";
+
+
 
 export default function Navbar() {
   // const [price, setPrice] = useState(0);
@@ -6,9 +8,13 @@ export default function Navbar() {
 
   return (
     <div className="flex gap-4 w-full p-8">
-      <h1>Price cal</h1>
+      <div>
+        <Logo />
+      </div>
       <button>
-        Scrapper
+        <TextMD>
+          Charge Data
+        </TextMD>
       </button>
       <button>
         Extrair dados

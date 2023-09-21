@@ -1,10 +1,9 @@
 import fastify from "fastify";
 import cors from "@fastify/cors";
+import { scrapperRoutes } from "./scrapper";
 
 const app = fastify();
-app.get("/", async (req, res) => {
-  return res.send("Ola mundo");
-})
+app.register(scrapperRoutes);
 
 app
   .listen({

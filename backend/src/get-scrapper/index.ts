@@ -6,7 +6,7 @@ type ProductProps = {
   productName: string;
 };
 
-route.post("/teste", async (req: Request, res: Response) => {
+route.post("/scrapper", async (req: Request, res: Response) => {
   const { productName } = req.body as ProductProps;
   if (productName.length <= 0) {
     return res.status(404).send({
@@ -14,6 +14,10 @@ route.post("/teste", async (req: Request, res: Response) => {
       erro: "404",
     });
   }
+
+  setTimeout(() => {
+    console.log("\n[+] - CALL SCRAPPER SERVICE \n");
+  }, 2000);
   const callScrapperService = await ScrapperService(productName);
   const result = JSON.stringify(callScrapperService);
   return res.send(result);

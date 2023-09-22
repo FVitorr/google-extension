@@ -1,14 +1,10 @@
-import fastify from "fastify";
-import cors from "@fastify/cors";
-import { scrapperRoutes } from "./scrapper";
+import express, { Request, Response, Router } from "express";
+import route from "./get-scrapper";
+const app = express();
+app.use(express.json());
+app.use(route);
 
-const app = fastify();
-app.register(scrapperRoutes);
 
-app
-  .listen({
-    port: 3333,
-  })
-  .then(() => {
-    console.log("Server online - Running on localhost:3333");
-  });
+app.listen(3333, () => {
+  console.log("online");
+});

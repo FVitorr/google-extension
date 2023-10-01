@@ -15,6 +15,7 @@ type ProductScrapper = {
 
 route.post("/scrapper", async (req: Request, res: Response) => {
   const { productName } = req.body as ProductProps;
+  console.log(productName)
   if (productName.length <= 0) {
     return res.status(404).send({
       message: "Invalid value",
@@ -70,15 +71,10 @@ route.post("/scrapper", async (req: Request, res: Response) => {
         return false; // ou true, dependendo do seu critério para valores não numéricos
       });
 
-      const highestPriceOriginal =
-        highestPriceItem.price / 100; // Converter de volta para o formato original
-
+     
       const result = JSON.stringify({
         items: filteredItems,
-        highestPriceItem: {
-          ...highestPriceItem,
-          price: highestPriceOriginal,
-        },
+        highestPriceItem
       });
 
       return res.send(result);

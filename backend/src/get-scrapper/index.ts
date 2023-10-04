@@ -71,13 +71,18 @@ route.post("/scrapper", async (req: Request, res: Response) => {
         return false; // ou true, dependendo do seu critério para valores não numéricos
       });
 
-     
-      const result = JSON.stringify({
-        items: filteredItems,
-        highestPriceItem
+      const resultArray: any[] = [];
+      filteredItems.forEach((item) => {
+        resultArray.push({
+          title: item.title,
+          price: item.price,
+          rating: item.rating,
+          reviewCount: item.reviewCount,
+          link: item.link,
+        });
       });
 
-      return res.send(result);
+      return res.send(resultArray);
     } else {
       return res.status(500).send({
         message: "Error finding the highest price item",

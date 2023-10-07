@@ -1,50 +1,17 @@
-// import { useState, useEffect } from "react";
-
-// export default function Home() {
-//   const [produtos, setProdutos] = useState([]);
-//   const [isLoading, setIsLoading] = useState(true);
-
-//   useEffect(() => {
-//     async function fetchData() {
-//       try {
-//         const response = await fetch("http://localhost:3333/scrapper", {
-//           method: "POST",
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//           body: JSON.stringify({ productName: "ps4 pro" }),
-//         });
-//         const data = await response.json();
-//         setProdutos(data);
-//         setIsLoading(false);
-//         console.log(data); // Manter o log no console
-//       } catch (error) {
-//         console.error(error);
-//         setIsLoading(false);
-//       }
-//     }
-//     fetchData();
-//   },[]);
-
-//   return (
-//     <div className="p-2">
-//       <h2>Produtos</h2>
-//       {
-//         <ul>
-//           {produtos.map((item: any) => (
-//             <div>{item.title}</div>
-//           ))}
-//         </ul>
-//       }
-//     </div>
-//   );
-// }
-
 import { useState, useEffect } from "react";
 
+type ProductsProps = {
+  link: string;
+  price: number;
+  rating: string;
+  reviewCount: string;
+  title: string;
+};
+
 export default function Home() {
-  const [produtos, setProdutos] = useState([]);
+  const [produtos, setProdutos] = useState<ProductsProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -78,16 +45,26 @@ export default function Home() {
     }
   }, [isLoading, produtos]);
 
-  console.log(produtos[1])
+  console.log(produtos[1]);
   return (
     <div className="p-2">
+      <form action="">
+        <input type="text" value={(e) => setSearch(e.target.value)} />
+      </form>
       <h2>Produtos</h2>
       {isLoading ? (
-        <p>Carregando...</p>
+        <p>Carregando lista de produtos</p>
       ) : produtos.length > 0 ? (
         <ul>
           {produtos.map((item, index) => (
-            <div key={index}>{item.title}</div>
+            <div key={index} className="p-4 flex flex-col items-start">
+              <p className="text-lg">{item.title}</p>
+              {/* OLHAR COMO LIMIAR O TAMANHO DA DESCRIPTION E COLOCAR UM BOTAO PARA EXIBIR MAIS */}
+              <p>
+                {item.rating} {item.reviewCount}
+              </p>
+              <p>{item.price}</p>
+            </div>
           ))}
         </ul>
       ) : (

@@ -33,7 +33,7 @@ route.post("/scrapper", async (req: Request, res: Response) => {
     });
   }
 
-  // Filtrar elementos com preço não vazio e extrair os números
+  // Remove elementos com price = "" 
   const filteredResults = callScrapperService.filter(
     (product: ProductScrapper) => product.price !== ""
   );

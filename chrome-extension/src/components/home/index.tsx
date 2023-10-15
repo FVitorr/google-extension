@@ -95,9 +95,10 @@ export default function Home() {
                 <p className="text-lg font-bold">{item.title}</p>
                 <div className="flex gap-4 font-semibold">
                   <p className="text-green-600 font-bold">
-                    {item.price.toString().startsWith("Valor:")
+                    {item.price}
+                    {/* {item.price.toString().startsWith("Valor:")
                       ? item.price
-                      : `R$${item.price}`}
+                      : `${item.price}`} */}
                   </p>
 
                   <p>{item.rating}</p>

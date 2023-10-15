@@ -1,18 +1,7 @@
 import { Request, Response, Router } from "express";
 import { ScrapperService } from "../services/scrapper";
+import { ProductProps, ProductScrapper } from "../types";
 const route = Router();
-
-type ProductProps = {
-  productName: string;
-};
-
-type ProductScrapper = {
-  title: string;
-  price: string;
-  rating: string;
-  reviewCount: string;
-  link: string;
-};
 
 route.post("/scrapper", async (req: Request, res: Response) => {
   const { productName } = req.body as ProductProps;
@@ -33,7 +22,7 @@ route.post("/scrapper", async (req: Request, res: Response) => {
     });
   }
 
-  // Remove elementos com price = "" 
+  // Remove elementos com price = "" e retorna somente prices completos
   const filteredResults = callScrapperService.filter(
     (product: ProductScrapper) => product.price !== ""
   );
@@ -44,7 +33,7 @@ route.post("/scrapper", async (req: Request, res: Response) => {
   const priceNumber = filteredResults.map((item: ProductScrapper) => {
     const match = item.price.match(regex);
     if (match) {
-      return match[1].replace(/[^0-9,.]/g, '');
+      return match[1].replace(/[^0-9,.]/g, "");
     }
     return "";
   });

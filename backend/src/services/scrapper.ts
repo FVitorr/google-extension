@@ -7,7 +7,7 @@ export async function ScrapperService(product: string) {
   });
   const page = await browser.newPage();
   if (product.length <= 0) {
-    console.log("Nenhum produto encontrado")
+    console.log("Nenhum produto encontrado");
     console.timeStamp();
     return browser.close();
   }
@@ -21,7 +21,9 @@ export async function ScrapperService(product: string) {
     );
     return items.map((item) => {
       const title = item.querySelector("h2 span")?.textContent?.trim() || "";
-      const price =
+      const price_calc =
+        item.querySelector(".a-price .a-offscreen")?.textContent?.trim() || "";
+      const priceOfString =
         item.querySelector(".a-price .a-offscreen")?.textContent?.trim() || "";
       const rating =
         item
@@ -38,8 +40,8 @@ export async function ScrapperService(product: string) {
         link = "https://www.amazon.com.br" + href;
       }
 
-      return { title, price, rating, reviewCount, link };
+      return { title, priceOfString, price_calc, rating, reviewCount, link };
     });
   });
-  return results
+  return results;
 }

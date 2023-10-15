@@ -24,23 +24,34 @@ route.post("/scrapper", async (req: Request, res: Response) => {
 
   // Remove elementos com price = "" e retorna somente prices completos
   const filteredResults = callScrapperService.filter(
-    (product: ProductScrapper) => product.price !== ""
+    (product: ProductScrapper) => product.priceOfString !== ""
   );
 
-  // Aplicar a regex para extrair apenas os números
-  const regex = /R\$\s*([\d,.]+)/; // Regex para encontrar "R$" seguido por dígitos, vírgulas e pontos
+  const regex = /R\$\s*((?:\d{1,3}(?:[.,]\d{3})*(?:,\d+)?))/; // Nova regex
 
-  const priceNumber = filteredResults.map((item: ProductScrapper) => {
-    const match = item.price.match(regex);
+  const transformedResults = filteredResults.map((item: ProductScrapper) => {
+    const match = item.priceOfString.match(regex);
     if (match) {
-      return match[1].replace(/[^0-9,.]/g, "");
+      let numericValue = match[1].replace(/[^0-9.,]/g, "");
+      // Garanta que haja apenas um ponto decimal e nenhuma vírgula
+      numericValue = numericValue.replace(",", ".");
+      numericValue = numericValue.replace(/\.(?=\d{3,})/g, ""); // Remova pontos extras
+
+      const numericPrice = parseFloat(numericValue);
+      return {
+        ...item,
+        priceOfString: numericPrice,
+      };
     }
-    return "";
+    return item;
   });
 
-  console.log(priceNumber);
+  // Ordenar do mais caro para o mais barato
+  transformedResults.sort(
+    (a: any, b: any) => b.priceOfString - a.priceOfString
+  );
 
-  return res.send(filteredResults);
+  return res.send(transformedResults);
 });
 
 export default route;

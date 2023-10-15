@@ -1,10 +1,11 @@
 export type ProductProps = {
-   productName: string
-}
+  productName: string;
+};
 export type ProductScrapper = {
-   title: string;
-   price: string;
-   rating: string;
-   reviewCount: string;
-   link: string
-}
+  title: string;
+  priceOfString: string;
+  rating: string;
+  reviewCount: string;
+  link: string;
+  price_calc: string | number;
+};

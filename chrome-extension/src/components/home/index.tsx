@@ -1,62 +1,35 @@
 import { useState, useEffect } from "react";
-
-type ProductsProps = {
-  link: string;
-  price: number;
-  rating: string;
-  reviewCount: string;
-  title: string;
-};
+import { ProductsProps } from "../utils/types";
+import { FetchScrapperData } from "../utils/fetchData";
 
 export default function Home() {
   const [produtos, setProdutos] = useState<ProductsProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  async function fetchData() {
-    if (search.trim() === "") {
-      return;
-    }
-    setIsLoading(true);
-    try {
-      const response = await fetch("http://localhost:3333/scrapper", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ productName: search }),
-      });
-      const data = await response.json();
-      await setProdutos(data);
-      console.log(data); // Manter o log no console
-    } catch (error) {
-      console.error(error);
-    } finally {
-      // Após 3 segundos, definir isLoading como false
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 3000);
-    }
-  }
-
-  useEffect(() => {
-    // Remova a chamada fetchData do useEffect anterior
-  }, [search]);
-
   useEffect(() => {
     // Verificar o tamanho do array após o atraso de 3 segundos
     if (!isLoading && produtos.length > 0) {
       console.log("Exibindo dados na tela...");
     }
-  }, [isLoading, produtos]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchData();
-  };
+  }, [isLoading, produtos, search]);
 
   const handleChange = (e: any) => {
     setSearch(e.target.value);
+    if (search.trim() === "") {
+      return;
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    FetchScrapperData({
+      address: "http://localhost:3333/scrapper",
+      search,
+      updateFN: setProdutos,
+      timeoutFN: setIsLoading,
+    });
   };
 
   return (
@@ -85,7 +58,7 @@ export default function Home() {
         <p>Carregando lista de produtos</p>
       ) : produtos.length > 0 ? (
         <div className="pt-4">
-          <h2>Produtos encontrados</h2>
+          '<h2>Produtos encontrados</h2>
           <ul className="flex flex-col gap-2 pt-2">
             {produtos.map((item, index) => (
               <div
@@ -94,12 +67,7 @@ export default function Home() {
               >
                 <p className="text-lg font-bold">{item.title}</p>
                 <div className="flex gap-4 font-semibold">
-                  <p className="text-green-600 font-bold">
-                    {item.price}
-                    {/* {item.price.toString().startsWith("Valor:")
-                      ? item.price
-                      : `${item.price}`} */}
-                  </p>
+                  <p className="text-green-600 font-bold">{item.price_calc}</p>
 
                   <p>{item.rating}</p>
                   <p>Reviews {item.reviewCount}</p>

@@ -6,9 +6,14 @@ export default function Home() {
   const [produtos, setProdutos] = useState<ProductsProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const productsPerPage = 15;
+  const indexOfLastPage = currentPage * productsPerPage;
+  const indexOfFirsProduct = indexOfLastPage - productsPerPage;
+  const currentProducts = produtos.slice(indexOfFirsProduct, indexOfLastPage);
 
   useEffect(() => {
-    // Verificar o tamanho do array após o atraso de 3 segundos
     if (!isLoading && produtos.length > 0) {
       console.log("Exibindo dados na tela...");
     }
@@ -58,9 +63,13 @@ export default function Home() {
         <p>Carregando lista de produtos</p>
       ) : produtos.length > 0 ? (
         <div className="pt-4">
-          '<h2>Produtos encontrados</h2>
+          <div className="flex gap-6">
+            <span>Resultados: {produtos.length}</span>
+            <span>Menor preço: </span>
+            <span>Media de preço: </span>
+          </div>
           <ul className="flex flex-col gap-2 pt-2">
-            {produtos.map((item, index) => (
+            {currentProducts.map((item, index) => (
               <div
                 key={index}
                 className="p-4 flex flex-col items-start bg-gray-800 rounded-md gap-2 mb-2"
@@ -78,8 +87,21 @@ export default function Home() {
                 >
                   Visitar produto
                 </a>
+                
               </div>
             ))}
+            <button
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Pagina Anterior
+                </button>
+                <button
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={indexOfFirsProduct >= produtos.length}
+                >
+                  Proxima Pagina
+                </button>
           </ul>
         </div>
       ) : (

@@ -50,7 +50,7 @@ route.post("/scrapper", async (req: Request, res: Response) => {
   transformedResults.sort(
     (a: any, b: any) => b.priceOfString - a.priceOfString
   );
-
+  console.log(transformedResults)
   return res.send(transformedResults);
 });
 

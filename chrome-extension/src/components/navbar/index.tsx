@@ -8,18 +8,17 @@ export default function Navbar() {
       <div>
         <Logo />
       </div>
-      <button>
-        <TextMD>Charge Data</TextMD>
-      </button>
-      <button>
-        <TextMD>Extrair dados</TextMD>
-      </button>
-      <button>
-        <TextMD>Assinar Premium</TextMD>
-      </button>
-      <button>
-        <TextMD>Configuracao</TextMD>
-      </button>
+      <div className="flex flex-row gap-4">
+        <button>
+          <TextMD>Exportar PDF</TextMD>
+        </button>
+        <button>
+          <p className="text-yellow-400 p-2 font-semibold">Assinar Premium</p>
+        </button>
+        <button>
+          <TextMD>Configuracao</TextMD>
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ProductsProps } from "../utils/types";
 import { FetchScrapperData } from "../utils/fetchData";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [produtos, setProdutos] = useState<ProductsProps[]>([]);
@@ -30,7 +31,7 @@ export default function Home() {
     e.preventDefault();
     setIsLoading(true);
     FetchScrapperData({
-      address: "http://localhost:3333/scrapper",
+      address: "http://localhost:3333/scrapper=amazon",
       search,
       updateFN: setProdutos,
       timeoutFN: setIsLoading,
@@ -38,7 +39,7 @@ export default function Home() {
   };
 
   return (
-    <div className="p-6 w-full h-auto bg-black">
+    <div className="p-6 w-full h-auto bg-zinc-950">
       <form
         onSubmit={handleSubmit}
         className="flex gap-2 items-center justify-start"
@@ -62,17 +63,30 @@ export default function Home() {
       ) : isLoading ? (
         <p>Carregando lista de produtos</p>
       ) : produtos.length > 0 ? (
-        <div className="pt-4">
+        <motion.div
+         className="pt-4"
+         initial={{
+          x:-1000
+         }}
+         animate={{
+          x: 0,
+         }}
+         transition={{
+          ease: 'linear',
+          duration: 0.2,
+
+         }}
+        >
           <div className="flex gap-6">
             <span>Resultados: {produtos.length}</span>
             <span>Menor preço: </span>
             <span>Media de preço: </span>
           </div>
-          <ul className="flex flex-col gap-2 pt-2">
+          <div className="flex flex-col gap-2 pt-2">
             {currentProducts.map((item, index) => (
               <div
                 key={index}
-                className="p-4 flex flex-col items-start bg-gray-800 rounded-md gap-2 mb-2"
+                className="p-4 flex flex-col items-start  bg-zinc-900 rounded-md gap-2 mb-2"
               >
                 <p className="text-lg font-bold">{item.title}</p>
                 <div className="flex gap-4 font-semibold">
@@ -83,27 +97,26 @@ export default function Home() {
                 </div>
                 <a
                   href={item.link}
-                  className="p-2 bg-emerald-600 rounded-md hover:bg-emerald-500 transition-all"
+                  className="bg-emerald-600 rounded-md hover:bg-emerald-500 transition-all"
                 >
                   Visitar produto
                 </a>
-                
               </div>
             ))}
             <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  Pagina Anterior
-                </button>
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={indexOfFirsProduct >= produtos.length}
-                >
-                  Proxima Pagina
-                </button>
-          </ul>
-        </div>
+              onClick={() => setCurrentPage(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Pagina Anterior
+            </button>
+            <button
+              onClick={() => setCurrentPage(currentPage + 1)}
+              disabled={indexOfFirsProduct >= produtos.length}
+            >
+              Proxima Pagina
+            </button>
+          </div>
+        </motion.div>
       ) : (
         <p>Nenhum produto disponível</p>
       )}

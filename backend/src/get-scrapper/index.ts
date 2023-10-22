@@ -4,7 +4,7 @@ import { ProductProps, ProductScrapper } from "../types";
 import { ScrapperServiceAli } from "../services/scrapper-AliExpress";
 const route = Router();
 
-route.post("/a1", async (req: Request, res: Response) => {
+route.post("/scrapper=aliexpress", async (req: Request, res: Response) => {
   // const { productName } = req.body;
   console.log("Antes do service")
   const callScrapperService = await ScrapperServiceAli("ps4");
@@ -14,7 +14,7 @@ route.post("/a1", async (req: Request, res: Response) => {
 });
 
 
-route.post("/scrapper", async (req: Request, res: Response) => {
+route.post("/scrapper=amazon", async (req: Request, res: Response) => {
   const { productName } = req.body as ProductProps;
 
   if (productName.length <= 0) {

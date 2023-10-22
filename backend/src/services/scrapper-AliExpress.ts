@@ -1,9 +1,8 @@
-import puppeteer from "puppeteer";
-import { Browser } from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 
-export async function ScrapperService(product: string) {
+export async function ScrapperServiceAli(product: string) {
   const browser: Browser = await puppeteer.launch({
-    headless: true, // O valor "new" foi substituído por "true" para tornar o navegador visível
+    headless: "new", // O valor "new" foi substituído por "true" para tornar o navegador visível
   });
   const page = await browser.newPage();
   if (product.length <= 0) {
@@ -47,6 +46,6 @@ export async function ScrapperService(product: string) {
 }
 
 // Exemplo de uso:
-ScrapperService("fone").then((results) => {
-  console.log(results);
-});
+// ScrapperServiceAli("fone").then((results) => {
+//   console.log(results);
+// });

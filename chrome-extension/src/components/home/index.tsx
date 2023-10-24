@@ -50,10 +50,13 @@ export default function Home() {
           value={search}
           onChange={handleChange}
         />
-        <optgroup>
+        <select>
+          <option selected>Selecione uma plataforma</option>
           <option value="amazon">Amazon</option>
           <option value="aliexpress">AliExpress</option>
-        </optgroup>
+          <option value="amazon">Alibaba</option>
+          <option value="aliexpress">Mercado Livre</option>
+        </select>
         <button
           type="submit"
           className="bg-blue-700 text-sm rounded w-20 p-[2px]"

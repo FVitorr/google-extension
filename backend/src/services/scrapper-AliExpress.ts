@@ -12,36 +12,33 @@ export async function ScrapperServiceAli(product: string) {
   }
   await page.goto(`https://pt.aliexpress.com/wholesale?SearchText=${product}`);
 
+  console.log("PROCURANDO");
+
   // Aguarde o seletor que contém os resultados da pesquisa
-  await page.waitForSelector(".list-item");
+  await page.waitForSelector(".manhattan--container--1lP57Ag.cards--gallery--2o6yJVt.search-card-item");
+  console.log("PAGINA CARREGADA");
 
   // Extrai os resultados da pesquisa
   const results = await page.evaluate(() => {
-    const items = Array.from(
-      document.querySelectorAll(".list-item")
-    );
-    return items.map((item) => {
-      const title = item.querySelector(".item-title")?.textContent?.trim() || "";
-      const price = item.querySelector(".price .value")?.textContent?.trim() || "";
-      const rating =
-        item
-          .querySelector(".feedback-rating strong")
-          ?.textContent?.trim() || "";
-      const reviewCount =
-        item
-          .querySelector(".feedback-rating .feedback-reviews")
-          ?.textContent?.trim() || "";
-      const link = item.querySelector(".product")?.getAttribute("href") || "";
-
+    const cardList = document.querySelectorAll(".manhattan--container--1lP57Ag.cards--gallery--2o6yJVt.search-card-item");
+    const data: any[] = [];
+    console.log(cardList);
+    cardList.forEach((item) => {
+      const title = item.querySelector(".manhattan--title--24F0J-G.cards--title--2rMisuY > h1")?.textContent?.trim() || "";
+      const price = item.querySelector(".manhattan--price--WvaUgDY")?.textContent?.trim() || "";
+      const rating = item.querySelector(".manhattan--evaluation--3cSMntr")?.textContent?.trim() || "";
+      const reviewCount = item.querySelector(".manhattan--trade--2PeJIEB")?.textContent?.trim() || "";
+      const link = item.querySelector(".multi--container--1UZxxHY.cards--card--3PJxwBm.cards--list--2rmDt5R.search-card-item")?.getAttribute("href") || "";
       let productLink = "";
-      if (link != "") {
+      if (link !== "") {
         productLink = "https:" + link;
       }
-
-      return { title, price, rating, reviewCount, link: productLink };
+      data.push({ title, price, rating, reviewCount, link: productLink });
     });
+    return data;
   });
 
+  await browser.close();
   return results;
 }
 

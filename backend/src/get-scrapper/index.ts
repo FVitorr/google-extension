@@ -5,12 +5,14 @@ import { ScrapperServiceAli } from "../services/scrapper-AliExpress";
 const route = Router();
 
 route.post("/scrapper=aliexpress", async (req: Request, res: Response) => {
-  // const { productName } = req.body;
-  console.log("Antes do service")
-  const callScrapperService = await ScrapperServiceAli("ps4");
-  console.log("PASSOU AQUI")
+  const { productName } = req.body;
+  console.log(productName)
+
+  if(productName.length <= 0) res.send("Nenhum produto encontrado!")
+
+  const callScrapperService = await ScrapperServiceAli(productName);
   console.log(callScrapperService)
-  return res.send("ok");
+  return res.json(callScrapperService);
 });
 
 
@@ -44,7 +46,7 @@ route.post("/scrapper=amazon", async (req: Request, res: Response) => {
     const match = item.priceOfString.match(regex);
     if (match) {
       let numericValue = match[1].replace(/[^0-9.,]/g, "");
-      // Garanta que haja apenas um ponto decimal e nenhuma vírgula
+      // Garanta que haja apenas um ponto decimal e nenhuma vÃ­rgula
       numericValue = numericValue.replace(",", ".");
       numericValue = numericValue.replace(/\.(?=\d{3,})/g, ""); // Remova pontos extras
 

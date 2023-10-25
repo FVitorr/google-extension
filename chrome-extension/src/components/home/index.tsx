@@ -90,14 +90,15 @@ export default function Home() {
             <span>Media de preço: </span>
           </div>
           <div className="flex flex-col gap-2 pt-2">
+            {/* CRIAR COMPONENTE PRA ISSO AQUI */}
             {currentProducts.map((item, index) => (
               <div
                 key={index}
                 className="p-4 flex flex-col items-start  bg-zinc-900 rounded-md gap-2 mb-2"
               >
-                <p className="text-lg font-bold">{item.title}</p>
-                <div className="flex gap-4 font-semibold">
-                  <p className="text-green-600 font-bold">{item.price_calc}</p>
+                <p className="text-sm font-bold">{item.title}</p>
+                <div className="flex gap-4 font-semibold text-xs">
+                  <p className="text-green-600 font-bold text-xs">{item.price_calc}</p>
                   <p>{item.rating}</p>
                   <p>Reviews {item.reviewCount}</p>
                 </div>

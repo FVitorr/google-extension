@@ -1,34 +1,32 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { ProductsProps } from "../utils/types";
 import { FetchScrapperData } from "../utils/fetchData";
 import { motion } from "framer-motion";
+import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
 
 export default function Home() {
   const [produtos, setProdutos] = useState<ProductsProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchError, setSearchError] = useState("");
 
   const productsPerPage = 15;
   const indexOfLastPage = currentPage * productsPerPage;
-  const indexOfFirsProduct = indexOfLastPage - productsPerPage;
-  const currentProducts = produtos.slice(indexOfFirsProduct, indexOfLastPage);
-
-  useEffect(() => {
-    if (!isLoading && produtos.length > 0) {
-      console.log("Exibindo dados na tela...");
-    }
-  }, [isLoading, produtos, search]);
+  const indexOfFirstProduct = indexOfLastPage - productsPerPage;
+  const currentProducts = produtos.slice(indexOfFirstProduct, indexOfLastPage);
 
   const handleChange = (e: any) => {
     setSearch(e.target.value);
-    if (search.trim() === "") {
-      return;
-    }
+    setSearchError(""); // Limpa a mensagem de erro ao digitar.
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (search.trim() === "") {
+      setSearchError("Por favor, insira um termo de busca.");
+      return;
+    }
     setIsLoading(true);
     FetchScrapperData({
       address: "http://localhost:3333/scrapper=amazon",
@@ -46,12 +44,13 @@ export default function Home() {
       >
         <input
           type="text"
-          className="text-black rounded-sm outline"
+          placeholder="Fone de ouvido"
+          className="text-black rounded-lg text-center outline"
           value={search}
           onChange={handleChange}
         />
-        <select>
-          <option selected>Selecione uma plataforma</option>
+        <select className="text-black rounded-lg text-center outline">
+          <option defaultValue={"Undefined"}>Selecione uma plataforma</option>
           <option value="amazon">Amazon</option>
           <option value="aliexpress">AliExpress</option>
           <option value="amazon">Alibaba</option>
@@ -65,24 +64,25 @@ export default function Home() {
         </button>
       </form>
 
+      {searchError && <p className="text-red-600">{searchError}</p>}
+
       {search.trim() === "" ? (
         <p>Nenhum termo de busca inserido</p>
       ) : isLoading ? (
         <p>Carregando lista de produtos</p>
       ) : produtos.length > 0 ? (
         <motion.div
-         className="pt-4"
-         initial={{
-          x:-1000
-         }}
-         animate={{
-          x: 0,
-         }}
-         transition={{
-          ease: 'linear',
-          duration: 0.2,
-
-         }}
+          className="pt-4"
+          initial={{
+            x: -1000,
+          }}
+          animate={{
+            x: 0,
+          }}
+          transition={{
+            ease: "linear",
+            duration: 0.2,
+          }}
         >
           <div className="flex gap-6">
             <span>Resultados: {produtos.length}</span>
@@ -98,30 +98,33 @@ export default function Home() {
                 <p className="text-lg font-bold">{item.title}</p>
                 <div className="flex gap-4 font-semibold">
                   <p className="text-green-600 font-bold">{item.price_calc}</p>
-
                   <p>{item.rating}</p>
                   <p>Reviews {item.reviewCount}</p>
                 </div>
                 <a
                   href={item.link}
-                  className="bg-emerald-600 rounded-md hover:bg-emerald-500 transition-all"
+                  className="bg-blue-600 text-center p-[2px] w-auto rounded-sm hover:bg-emerald-500 transition-all"
                 >
                   Visitar produto
                 </a>
               </div>
             ))}
-            <button
-              onClick={() => setCurrentPage(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Pagina Anterior
-            </button>
-            <button
-              onClick={() => setCurrentPage(currentPage + 1)}
-              disabled={indexOfFirsProduct >= produtos.length}
-            >
-              Proxima Pagina
-            </button>
+            <div className="w-full items-center justify-center flex p-2">
+              <button
+                className="text-4xl"
+                onClick={() => setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <MdArrowBackIos />
+              </button>
+              <button
+                className="text-4xl"
+                onClick={() => setCurrentPage(currentPage + 1)}
+                disabled={indexOfFirstProduct >= produtos.length}
+              >
+                <MdArrowForwardIos />
+              </button>
+            </div>
           </div>
         </motion.div>
       ) : (

@@ -12,7 +12,7 @@ export async function FetchScrapperData({
   address,
   search,
   updateFN,
-  timeoutFN
+  timeoutFN,
 }: FetchScrapperDataInterface) {
   try {
     const response = await fetch(address, {

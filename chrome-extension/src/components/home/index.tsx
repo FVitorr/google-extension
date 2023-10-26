@@ -10,6 +10,7 @@ export default function Home() {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchError, setSearchError] = useState("");
+  const [plataform, setPlataform] = useState(null);
 
   const productsPerPage = 15;
   const indexOfLastPage = currentPage * productsPerPage;
@@ -20,7 +21,10 @@ export default function Home() {
     setSearch(e.target.value);
     setSearchError(""); // Limpa a mensagem de erro ao digitar.
   };
-
+  const handleSubmitPlataform = (e:any) => {
+    setPlataform(e.target.value)
+    console.log(plataform);
+  } 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (search.trim() === "") {
@@ -29,11 +33,13 @@ export default function Home() {
     }
     setIsLoading(true);
     FetchScrapperData({
-      address: "http://localhost:3333/scrapper=amazon",
+      // LOGICA PARA ALTERNAR ENDERECO
+      address: `http://localhost:3333/scrapper=${plataform}`,
       search,
       updateFN: setProdutos,
       timeoutFN: setIsLoading,
     });
+    console.log(plataform);
   };
 
   return (
@@ -49,12 +55,15 @@ export default function Home() {
           value={search}
           onChange={handleChange}
         />
-        <select className="text-black rounded-lg text-center outline">
+        <select 
+          className="text-black rounded-lg text-center outline"
+          onChange={handleSubmitPlataform}
+        >
           <option defaultValue={"Undefined"}>Selecione uma plataforma</option>
           <option value="amazon">Amazon</option>
           <option value="aliexpress">AliExpress</option>
-          <option value="amazon">Alibaba</option>
-          <option value="aliexpress">Mercado Livre</option>
+          <option value="amazon" disabled>Alibaba</option>
+          <option value="aliexpress" disabled>Mercado Livre</option>
         </select>
         <button
           type="submit"
@@ -112,14 +121,14 @@ export default function Home() {
             ))}
             <div className="w-full items-center justify-center flex p-2">
               <button
-                className="text-4xl"
+                className="text-2xl"
                 onClick={() => setCurrentPage(currentPage - 1)}
                 disabled={currentPage === 1}
               >
                 <MdArrowBackIos />
               </button>
               <button
-                className="text-4xl"
+                className="text-2xl"
                 onClick={() => setCurrentPage(currentPage + 1)}
                 disabled={indexOfFirstProduct >= produtos.length}
               >

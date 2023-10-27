@@ -3,6 +3,7 @@ import { ProductsProps } from "../utils/types";
 import { FetchScrapperData } from "../utils/fetchData";
 import { motion } from "framer-motion";
 import { MdArrowBackIos, MdArrowForwardIos } from "react-icons/md";
+import { Item } from "../item";
 
 export default function Home() {
   const [produtos, setProdutos] = useState<ProductsProps[]>([]);
@@ -21,16 +22,22 @@ export default function Home() {
     setSearch(e.target.value);
     setSearchError(""); // Limpa a mensagem de erro ao digitar.
   };
-  const handleSubmitPlataform = (e:any) => {
-    setPlataform(e.target.value)
+  const handleSubmitPlataform = (e: any) => {
+    setPlataform(e.target.value);
     console.log(plataform);
-  } 
+  };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (search.trim() === "") {
       setSearchError("Por favor, insira um termo de busca.");
       return;
     }
+
+    if (!plataform) {
+      setSearchError("Por favor, selecione uma plataforma!");
+      return;
+    }
+
     setIsLoading(true);
     FetchScrapperData({
       // LOGICA PARA ALTERNAR ENDERECO
@@ -55,15 +62,19 @@ export default function Home() {
           value={search}
           onChange={handleChange}
         />
-        <select 
+        <select
           className="text-black rounded-lg text-center outline"
           onChange={handleSubmitPlataform}
         >
           <option defaultValue={"Undefined"}>Selecione uma plataforma</option>
           <option value="amazon">Amazon</option>
           <option value="aliexpress">AliExpress</option>
-          <option value="amazon" disabled>Alibaba</option>
-          <option value="aliexpress" disabled>Mercado Livre</option>
+          <option value="amazon" disabled>
+            Alibaba
+          </option>
+          <option value="aliexpress" disabled>
+            Mercado Livre
+          </option>
         </select>
         <button
           type="submit"
@@ -101,23 +112,7 @@ export default function Home() {
           <div className="flex flex-col gap-2 pt-2">
             {/* CRIAR COMPONENTE PRA ISSO AQUI */}
             {currentProducts.map((item, index) => (
-              <div
-                key={index}
-                className="p-4 flex flex-col items-start  bg-zinc-900 rounded-md gap-2 mb-2"
-              >
-                <p className="text-sm font-bold">{item.title}</p>
-                <div className="flex gap-4 font-semibold text-xs">
-                  <p className="text-green-600 font-bold text-xs">{item.price_calc}</p>
-                  <p>{item.rating}</p>
-                  <p>Reviews {item.reviewCount}</p>
-                </div>
-                <a
-                  href={item.link}
-                  className="bg-blue-600 text-center p-[2px] w-auto rounded-sm hover:bg-emerald-500 transition-all"
-                >
-                  Visitar produto
-                </a>
-              </div>
+             <Item index={index} link={item.link} price_calc={item.price_calc} rating={item.rating} review={item.reviewCount} title={item.title} />
             ))}
             <div className="w-full items-center justify-center flex p-2">
               <button

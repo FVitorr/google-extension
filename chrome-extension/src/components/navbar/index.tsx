@@ -9,7 +9,9 @@ export default function Navbar() {
         <Logo />
       </div>
       <div className="flex flex-row gap-4">
+        {/* AQUI ESTE BOTAO DEVE CHAMAR UMA FUNCAO QUE VAI PEGAR TODO O CONTEUDO QUE ESTA ARMAZENADO NO STATE ONDE FICA O CONTEUDO DOS PRODUTOS E DEVE PASSAR ELE EM UM PDF, OU SEJA, CREIO QUE VOU TER QUE USAR UM CONTEXT */}
         <button>
+          
           <TextMD>Exportar PDF</TextMD>
         </button>
         <button>
